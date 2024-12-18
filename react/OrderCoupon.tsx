@@ -1,11 +1,11 @@
-import React, { createContext, ReactNode, useContext, useCallback } from 'react'
+import React, { createContext, ReactNode, useCallback, useContext } from 'react'
 import { compose, graphql } from 'react-apollo'
+import { useOrderForm } from 'vtex.order-manager/OrderForm'
 import {
   QueueStatus,
   useOrderQueue,
   useQueueStatus,
 } from 'vtex.order-manager/OrderQueue'
-import { useOrderForm } from 'vtex.order-manager/OrderForm'
 
 import InsertCoupon from 'vtex.checkout-resources/MutationInsertCoupon'
 
@@ -15,6 +15,7 @@ interface InsertCouponResult {
 }
 
 interface Context {
+  coupon?: string
   insertCoupon: (coupon: string) => Promise<InsertCouponResult>
 }
 
@@ -32,7 +33,8 @@ export const OrderCouponProvider = compose(
   graphql(InsertCoupon, { name: 'InsertCoupon' })
 )(({ children, InsertCoupon }: OrderCouponProviderProps) => {
   const { enqueue, listen } = useOrderQueue()
-  const { setOrderForm } = useOrderForm()
+  const { orderForm, setOrderForm } = useOrderForm()
+  const coupon = orderForm.marketingData.coupon || ''
 
   const queueStatusRef = useQueueStatus(listen)
 
@@ -81,6 +83,7 @@ export const OrderCouponProvider = compose(
   return (
     <OrderCouponContext.Provider
       value={{
+        coupon,
         insertCoupon,
       }}
     >

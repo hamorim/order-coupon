@@ -1,8 +1,8 @@
-import React, { FunctionComponent } from 'react'
 import { act, fireEvent, render } from '@vtex/test-tools/react'
+import React, { FunctionComponent } from 'react'
 
 import InsertCoupon from 'vtex.checkout-resources/MutationInsertCoupon'
-import { OrderFormProvider, useOrderForm } from 'vtex.order-manager/OrderForm'
+import { OrderFormProvider } from 'vtex.order-manager/OrderForm'
 import { OrderQueueProvider } from 'vtex.order-manager/OrderQueue'
 import { OrderCouponProvider, useOrderCoupon } from '../OrderCoupon'
 import { mockOrderForm } from '../__mocks__/mockOrderForm'
@@ -31,7 +31,7 @@ const mockInsertCouponMutation = (args: string, result: MarketingData) => ({
 describe('OrderCoupon', () => {
   it('should throw when useOrderCoupon is used outside a OrderCouponProvider', () => {
     const oldConsoleError = console.error
-    console.error = () => {}
+    console.error = () => { }
     const Component: FunctionComponent = () => {
       useOrderCoupon()
       return <div>foo</div>
@@ -46,12 +46,7 @@ describe('OrderCoupon', () => {
 
   it('should insert a coupon', async () => {
     const Component: FunctionComponent = () => {
-      const {
-        orderForm: {
-          marketingData: { coupon },
-        },
-      } = useOrderForm()
-      const { insertCoupon } = useOrderCoupon()
+      const { insertCoupon, coupon } = useOrderCoupon()
 
       return (
         <div>
